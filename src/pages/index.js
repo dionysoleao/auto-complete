@@ -8,7 +8,7 @@ export default function Home() {
       <Head>
         <title>Create Next App</title>
       </Head>
-      <h2>yeah</h2>
+      <h2>Yeah!</h2>
       <Busca />
     </div>
   )
