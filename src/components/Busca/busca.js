@@ -66,6 +66,7 @@ export default function Busca() {
             onInput={(e) => {setSearchInputValue(e.target.value);setSearchType("Person")}}
             type="text"
             ref={register1}
+            autoComplete="off"
             onFocus={() => setIsSearchingPerson(true)}
             onBlur={(e) => {setIsSearchingPerson(false); setSearchInputValue(""); e.target.value = ""; setPersonSearchList([])}}
           />
@@ -85,6 +86,7 @@ export default function Busca() {
             onInput={(e) => {setSearchType("Neighborhood");setSearchInputValue(e.target.value);}}
             type="text"
             ref={register2}
+            autoComplete="off"
             onFocus={() => setIsSearchingNeighborhood(true)}
             onBlur={(e) => {setIsSearchingNeighborhood(false); setSearchInputValue(""); e.target.value = ""; setPersonSearchList([])}}
           />
@@ -105,6 +107,7 @@ export default function Busca() {
             onInput={(e) => {setSearchType("Material");setSearchInputValue(e.target.value);}}
             type="text"
             ref={register3}
+            autoComplete="off"
             onFocus={() => setIsSearchingMaterial(true)}
             onBlur={(e) => {setIsSearchingMaterial(false); setSearchInputValue(""); e.target.value = ""; setPersonSearchList([])}}
           />

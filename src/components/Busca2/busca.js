@@ -49,14 +49,20 @@ export default function Busca() {
           className={styles.busca__campo}
           onInput={(e) => setSearchInputValue(e.target.value)}
           type="text"
+          value={searchInputValue}
+          autoComplete="off"
           ref={register}
+          
         />
 
         <select
           className={styles.busca__seletorTipo}
           onChange={(e) => {
             setSearchType(e.target.value);
+            setSearchInputValue("");
+            setSearchList([])
           }}
+          autoComplete="off"
           defaultValue="Person"
         >
           <option value="Person">Artesãos</option>
