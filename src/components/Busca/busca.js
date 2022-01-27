@@ -24,14 +24,14 @@ export default function Busca() {
       var myHeaders = new Headers();
 
       myHeaders.append(
-        "Authorization",
-        "Basic ZGlvbnlzb2xlYW9AZ21haWwuY29tOjEyMzQ1Ng=="
+        "api-key",
+        "85532ccb-5b93-4484-a9e4-053b791c32e6"
       );
 
       console.log(searchInputValue);
 
       fetch(
-        "https://cors-anywhere.herokuapp.com/https://artesanato.plano-b.com/api/1.0/search/" +
+        "https://artesanato.plano-b.com/api/1.0/search/" +
           searchInputValue +
           "?types=" +
           searchType,
