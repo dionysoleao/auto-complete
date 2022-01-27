@@ -1,65 +1,125 @@
-import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete , { createFilterOptions } from "@material-ui/lab/Autocomplete";
-import styles from './styles.module.css'
-
-
+import { useState, useEffect } from "react";
+import styles from "./styles.module.scss";
+import { useIsTyping } from "use-is-typing";
 
 export default function Busca() {
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [personSearchList, setPersonSearchList] = useState([]);
+  const [neighborhoodSearchList, setNeighborhoodSearchList] = useState([]);
+  const [materialSearchList, setMaterialSearchList] = useState([]);
+  const [searchType, setSearchType] = useState("Person");
+  const [isSearchingPerson,setIsSearchingPerson] = useState(false)
+  const [isSearchingNeighborhood,setIsSearchingNeighborhood] = useState(false)
+  const [isSearchingMaterial,setIsSearchingMaterial] = useState(false)
+  const [isTyping1, register1] = useIsTyping();
+  const [isTyping2, register2] = useIsTyping();
+  const [isTyping3, register3] = useIsTyping();
 
-  const [inputValue1, setInputValue1] = useState("");
-  const [artesaos, setArtesaos] = useState([]);
-  const [searchType,setSearchType] = useState("Person")
+  useEffect(() => {
+    isTyping1 || isTyping2 || isTyping3 ? "" : search(searchInputValue,searchType);
+  }, [searchInputValue, searchType, isTyping1, isTyping2, isTyping3]);
 
-  function search(inputValue1){
+  function search(searchInputValue, searchType) {
+    if (searchInputValue !== "") {
+      var myHeaders = new Headers();
 
-    if(inputValue1 !== ""){
-    var myHeaders = new Headers();
-    
-    myHeaders.append("Authorization", "Basic ZGlvbnlzb2xlYW9AZ21haWwuY29tOjEyMzQ1Ng==");
-    console.log(inputValue1)
-    fetch("https://cors-anywhere.herokuapp.com/https://artesanato.plano-b.com/api/1.0/search/"+inputValue1+"?types="+searchType, {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      })
-    .then(response => response.json())
-    .then(data => setArtesaos(data))
-  }}
-  const filterOptions = createFilterOptions({
-    matchFrom: 'start',
-    limit:6
-  });
+      myHeaders.append(
+        "Authorization",
+        "Basic ZGlvbnlzb2xlYW9AZ21haWwuY29tOjEyMzQ1Ng=="
+      );
 
+      console.log(searchInputValue);
+
+      fetch(
+        "https://cors-anywhere.herokuapp.com/https://artesanato.plano-b.com/api/1.0/search/" +
+          searchInputValue +
+          "?types=" +
+          searchType,
+        {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow"
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (searchType == "Person"){
+            setPersonSearchList(data)
+          } else if (searchType == "Neighborhood"){
+            setNeighborhoodSearchList(data)
+          } else if (searchType == "Material"){
+            setMaterialSearchList(data)
+          }
+        });
+    }
+  }
 
   return (
     <>
-    <div className={styles.container}>
-     <Autocomplete
-        className={styles.autoFill}
-        inputValue={inputValue1}
-        onInputChange={(e) => {setInputValue1(event.target.value);search(event.target.value) }}
-        open={inputValue1.length >= 1}
-        options={artesaos}
-        getOptionLabel={(option) => option['@name']}
-        style={{ width: 300 }}
-        filterOptions={filterOptions}
-        renderInput={(params) => (
-          <TextField {...params} label="Busca" variant="standard" />
-        )}
-      />
+      <h1>Busca Múltipla</h1>
+      <a href="./nova">busca com tags</a>
+      <div className={styles.busca__groupContainer}>
+        <div className={styles.busca}>
+          <input
+            placeholder="Artesãos"
+            className={styles.busca__campo}
+            onInput={(e) => {setSearchInputValue(e.target.value);setSearchType("Person")}}
+            type="text"
+            ref={register1}
+            onFocus={() => setIsSearchingPerson(true)}
+            onBlur={(e) => {setIsSearchingPerson(false); setSearchInputValue(""); e.target.value = ""; setPersonSearchList([])}}
+          />
 
-         
-      <select value={searchType} onChange={ e => {setSearchType(e.target.value);search(inputValue1)}}>
-        <option value="Person">Artesãos</option>
-        <option value="Neighborhood">Povoados</option>
-        <option value="Material">Materiais</option>
-      </select>
-      
+          <div className={styles.busca__resultados}>
+            {isSearchingPerson? personSearchList.map((searchResult) => (
+              <div className={styles.busca__resultado}>
+                {searchResult["@name"]}
+              </div>
+            )):""}
+          </div>
+        </div>
+        <div className={styles.busca}>
+          <input
+            placeholder="Povoados"
+            className={styles.busca__campo}
+            onInput={(e) => {setSearchType("Neighborhood");setSearchInputValue(e.target.value);}}
+            type="text"
+            ref={register2}
+            onFocus={() => setIsSearchingNeighborhood(true)}
+            onBlur={(e) => {setIsSearchingNeighborhood(false); setSearchInputValue(""); e.target.value = ""; setPersonSearchList([])}}
+          />
+
+          <div className={styles.busca__resultados}>
+            {isSearchingNeighborhood? neighborhoodSearchList.map((searchResult) => (
+              <div className={styles.busca__resultado}>
+                {searchResult["@name"]}
+              </div>
+            )):""}
+          </div>
+        </div>
+
+        <div className={styles.busca}>
+          <input
+            placeholder="Materiais"
+            className={styles.busca__campo}
+            onInput={(e) => {setSearchType("Material");setSearchInputValue(e.target.value);}}
+            type="text"
+            ref={register3}
+            onFocus={() => setIsSearchingMaterial(true)}
+            onBlur={(e) => {setIsSearchingMaterial(false); setSearchInputValue(""); e.target.value = ""; setPersonSearchList([])}}
+          />
+
+          <div className={styles.busca__resultados}>
+            {isSearchingMaterial? materialSearchList.map((searchResult) => (
+              <div className={styles.busca__resultado}>
+                {searchResult["@name"]}
+              </div>
+            )):""}
+        </div>
+          
+        </div>
       </div>
-      <div className={styles.getBack}><h1>inputValue1: {inputValue1}</h1></div>
-      </>
-
-
+      
+    </>
   );
 }
