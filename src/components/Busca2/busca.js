@@ -85,7 +85,7 @@ export default function Busca() {
             <div className={styles.busca__resultado}>
               {searchResult["@name"]}
               {searchType !== "Person" ? (
-                <div
+                tags.includes(searchResult["@name"])?"":<div
                   onClick={() => {
                     setTags([...tags, searchResult["@name"]]);
                   }}
